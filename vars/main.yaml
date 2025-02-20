@@ -1,0 +1,13 @@
+token: "" # Available at https://services.cloud.netapp.com/refresh-token
+
+clientid: "" # Available at https://services.cloud.netapp.com/developer-hub.
+
+agentid: "" # BlueXP Connector Account ID
+
+authorization: "Bearer " #Put you access token after `Bearer`, this will be obtained by running "access_token.yaml" playbook.
+
+accountid: "" # BlueXP account ID
+
+replicationplanid: "" # Replication plan ID obtained through `get-replication` task.
+
+vcenterid: "" # Source VCenter ID - obtained Through `get-replication` task.
