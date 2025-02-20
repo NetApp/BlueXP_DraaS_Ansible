@@ -1,0 +1,37 @@
+---
+- name: Make HTTP POST request to Discover new VMs from Vcenter
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/main.yaml
+
+
+  tasks:
+    - name: Refresh Site (Vcenter)
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/discovery"
+        method: POST
+        return_content: yes
+        headers:
+          Content-Type: "application/json"  
+          x-agent-id: "{{ agentid }}"
+          Authorization: "{{ authorization }}"
+          x-account-id: "{{ accountid }}"
+        body: '{"id": "{{ vcenterid }}" }'
+        body_format: json 
+
+        status_code:
+          - 202
+        timeout: 100
+        return_content: yes
+         
+      register: result
+
+    - name: Display the job UUID if status is 202
+      debug:
+#        msg: "Job UUID: {{ result.json.job.uuid }}"
+        var: result
+      when: result.status == 202
+
+     
+

@@ -1,0 +1,24 @@
+---
+- name: Make HTTP GET request to fetch replication plans
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/main.yaml
+
+  tasks:
+    - name: Fetch replication plans
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/replicationplans?"
+        method: get
+        return_content: yes
+        headers:
+          Content-Type: "application/json"  
+          x-agent-id: "{{ agentid }}" 
+          Authorization: "{{ authorization }}"
+          x-account-id: "{{ accountid }}"
+      register: result
+
+    - name: Print the fetched replication plans
+      debug:
+        var: result.json
+

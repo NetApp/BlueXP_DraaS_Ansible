@@ -1,0 +1,30 @@
+---
+- name: Make HTTP PUT request to Edit the Replication Plan
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/main.yaml
+
+  tasks:
+    - name: Edit Replication Plan
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/replicationplans/{{ replicationplanid }}"
+        method: put
+        return_content: yes
+        headers:
+          Content-Type: "application/json"
+          Authorization: "{{ authorization }}"  
+          x-account-id: "{{ accountid }}"
+          x-agent-id: "{{ agentid }}"
+        body: >
+          {
+          }
+        validate_certs: no
+        body_format: json
+        return_content: yes
+        status_code: [200, 201]
+      register: result
+
+    - name: Print result
+      debug:
+        var: result

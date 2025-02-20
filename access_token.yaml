@@ -1,0 +1,25 @@
+---
+- name: Obtain a new access token using a refresh token
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/main.yaml
+
+  tasks:
+    - name: Request new access token
+      uri:
+        url: "https://netapp-cloud-account.auth0.com/oauth/token"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body: 
+          grant_type: "refresh_token"
+          refresh_token: "{{ token }}"
+          client_id: "{{ clientid }}"
+      register: token_response
+
+    - name: Print the new access token response
+      debug:
+        var: token_response.json
+

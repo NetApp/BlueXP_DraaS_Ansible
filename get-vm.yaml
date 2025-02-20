@@ -1,0 +1,24 @@
+---
+- name: Make HTTP GET request to fetch VMs in a vcenter
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/main.yaml
+
+  tasks:
+    - name: Fetch Vms
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/vcenters/{{ vcenterid }}/virtual-machines"
+        method: get
+        return_content: yes
+        headers:
+          Content-Type: "application/json"  
+          x-agent-id: "{{ agentid }}" 
+          Authorization: "{{ authorization }}"
+          x-account-id: "{{ accountid }}"
+      register: result
+
+    - name: Print the fetched VMs
+      debug:
+        var: result.json
+
