@@ -1,0 +1,68 @@
+---
+- name: Make HTTP POST request to add vcenter to existing site
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/env/extravars
+
+  tasks:
+    - name: Load the site variable file
+      ansible.builtin.include_vars:
+        file: ./vars/dest_site.json
+        name: dest_site
+
+    - name: Get the site ID
+      ansible.builtin.debug:
+        msg: "{{ dest_site.json.id }}"
+
+    - name: Add vCenter
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/vcenters"
+        method: post
+        return_content: yes
+        headers:
+          Content-Type: "application/json"  
+          x-agent-id: "{{ agentid }}" 
+          Authorization: "{{ authorization }}"
+          x-account-id: "{{ accountid }}"
+        body: > 
+          {
+            "host_name": "{{ destvcenterhostname }}",
+            "username": "administrator@siemgmt.com",
+            "password": "NetApp!23NetApp!23",
+            "agentid": "p6rDCdSCWd1cBd5Y2PyyEbeb4iM8HQHsclients",
+            "skipsslvalidation": true,
+            "port":443,
+            "trigger_discovery": true,
+            "discovery_schedules": [
+              {
+                "schedule_type":"Hourly",
+                "start_time":"2025-08-21T20:42:00.000Z",
+                "hours_interval":23,
+                "minutes_interval":59,
+                "enabled":true
+              }
+            ],
+            "site_id": "{{ dest_site.json.id }}"
+          }
+        body_format: json
+        status_code: [200, 202, 201]
+      register: result
+    
+    - name: Setting dest_vcenter value.
+      ansible.builtin.set_fact:
+        dest_vcenter: "{{ result }}"
+
+    - name: Save the variable to a file
+      ansible.builtin.copy:
+        content: "{{ dest_vcenter | to_json }}"
+        dest: ./vars/dest_vcenter.json
+    
+    - name: Use the variable file
+      ansible.builtin.include_vars:
+        file: ./vars/dest_vcenter.json
+        name: dest_vcenter
+
+    - name: Get the site ID
+      ansible.builtin.debug:
+        msg: "{{ dest_vcenter.json.id }}" 

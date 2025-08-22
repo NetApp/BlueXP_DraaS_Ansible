@@ -1,0 +1,69 @@
+---
+- name: Make HTTP POST request to Create RGs
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/env/extravars
+
+  tasks:
+    - name: Load the src_site variable file
+      ansible.builtin.include_vars:
+        file: ./vars/src_site.json
+        name: src_site
+    
+    - name: Load the src_vcenter variable file
+      ansible.builtin.include_vars:
+        file: ./vars/src_vcenter.json
+        name: src_vcenter
+  
+    - name: Create Resource Groups
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/resourcegroups"
+        method: post
+        return_content: yes
+        headers:
+          Content-Type: "application/json"  
+          x-agent-id: "{{ agentid }}" 
+          Authorization: "{{ authorization }}"
+          x-account-id: "{{ accountid }}"
+        body: >
+          {
+            "description": "",
+            "editallowed": false,
+            "name": "ANSIBLE_ResourceGroup1",
+            "protected": false,
+            "resources": [
+                {
+                    "data_center": "VCF9D-DC01",
+                    "datastore_id": "",
+                    "id": "dm0tPjUxNWJhZmZiLTJhYmItNGVmYS04N2JiLTVmN2Y5YzhhODE4ZS0+W0RSYWFTX1NyY0JdIERSYWFTVGVzdF9VMjRfTmV3L0RSYWFTVGVzdF9VMjRfTmV3LnZteA==",
+                    "name": "DRaaSTest_U24_New",
+                    "site_id": "{{ src_site.json.id }}",
+                    "site_name": "{{ srcsitename }}",
+                    "vcenter_id": "{{ src_vcenter.json.id }}",
+                    "vcenter_name": "{{ srcvcenterhostname }}"
+                },
+                {
+                    "data_center": "VCF9D-DC01",
+                    "datastore_id": "",
+                    "id": "dm0tPjUxNWJhZmZiLTJhYmItNGVmYS04N2JiLTVmN2Y5YzhhODE4ZS0+W0RSYWFTX1NyY0JdIERSYWFTVGVzdF9XMksyMl9uZXcvRFJhYVNUZXN0X1cySzIyX25ldy52bXg=",
+                    "name": "DRaaSTest_W2K22_New",
+                    "site_id": "{{ src_site.json.id }}",
+                    "site_name": "{{ srcsitename }}",
+                    "vcenter_id": "{{ src_vcenter.json.id }}",
+                    "vcenter_name": "{{ srcvcenterhostname }}"
+                }
+            ]
+          }
+        body_format: json
+        status_code: [200, 202, 201]
+      register: result
+
+    - name: Setting rg value.
+      ansible.builtin.set_fact:
+        resourcegroupe: "{{ result }}"
+
+    - name: Save the variable to a file
+      ansible.builtin.copy:
+        content: "{{ resourcegroupe | to_json }}"
+        dest: ./vars/resourcegroupe.json

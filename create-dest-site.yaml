@@ -1,0 +1,46 @@
+---
+- name: Make HTTP POST request to create a site
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/env/extravars
+
+  tasks:
+    - name: Create destination site
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/sites"
+        method: post
+        return_content: yes
+        headers:
+          Content-Type: "application/json"  
+          x-agent-id: "{{ agentid }}" 
+          Authorization: "{{ authorization }}"
+          x-account-id: "{{ accountid }}"
+        body: > 
+          {
+            "name": "{{ destsitename }}",
+            "region": "",
+            "type": "onprem"
+          }
+        body_format: json
+        status_code: [200, 202, 201]
+      register: result
+
+    - name: Setting dest_site value.
+      ansible.builtin.set_fact:
+        dest_site: "{{ result }}"
+
+    - name: Save the variable to a file
+      ansible.builtin.copy:
+        content: "{{ dest_site | to_json }}"
+        dest: ./vars/dest_site.json
+    
+    - name: Use the variable file
+      ansible.builtin.include_vars:
+        file: ./vars/dest_site.json
+        name: dest_site
+
+    - name: Get the site ID
+      ansible.builtin.debug:
+        msg: "{{ dest_site.json.id }}"
+
