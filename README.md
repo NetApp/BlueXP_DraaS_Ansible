@@ -2,8 +2,14 @@
 
 This repository contains Ansible playbooks for automating interactions with BlueXP Disaster Recovery as a Service (DRaaS). The provided playbooks allow you to manage access tokens, discover virtual machines, retrieve and edit replication plans, and get detailed information about virtual machines.
 
-## Prerequisites
+## License
+By accessing, downloading, installing or using the content in this repository, you agree the terms of the License laid out in License file.
 
+Note that there are certain restrictions around producing and/or sharing any derivative works with the content in this repository. Please make sure you read the terms of the License before using the content. If you do not agree to all of the terms, do not access, download or use the content in this repository.
+
+Copyright: 2025 NetApp Inc.
+
+## Prerequisites
 Before using these playbooks, ensure you have the following:
 - Ansible installed on your machine.
 - Valid credentials for BlueXP DRaaS.
@@ -124,3 +130,8 @@ Set Up Variables: Update the vars/env/extravars file with your specific values.
 
 ### Note
 Ensure that all necessary credentials and IDs are correctly set in the `vars/env/extravars` file before running the playbooks and the Python runner.
+
+## Author Information
+- [Ayman Soliman](mailto:ayman.soliman@netapp.com) - NetApp Solutions Engineering Team
+- [Pradeep Kumar](mailto:pradeep.kumar@netapp.com) - NetApp Solutions Engineering Team
+- [Niyaz Mohamed](mailto:niyaz.mohamed@netapp.com) - NetApp Solutions Engineering Team

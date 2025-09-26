@@ -67,7 +67,9 @@
                     "isdhcp": false,
                     "issubnetmapping": false,
                     "use_same_ip_config_settings": false,
-                    "use_same_ip_source": true
+                    "use_same_ip_source": true,
+                    "use_different_ip_source": false,
+                    "use_different_ip_settings": false
                 },
                 "created_on": "2025-08-15T15:24:13Z",
                 "cvo_resource": {

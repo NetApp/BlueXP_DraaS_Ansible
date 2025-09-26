@@ -29,7 +29,7 @@
           {
             "host_name": "{{ srcvcenterhostname }}",
             "username": "administrator@siemgmt.com",
-            "password": "NetApp!23NetApp!23",
+            "password": "",
             "agentid": "p6rDCdSCWd1cBd5Y2PyyEbeb4iM8HQHsclients",
             "skipsslvalidation": true,
             "port":443,

@@ -21,3 +21,5 @@ destvcenterhostname: vcf9e-vc01.siemgmt.com
 srcsitename: vcf9d
 
 destsitename: vcf9e
+
+snapshot_id:
