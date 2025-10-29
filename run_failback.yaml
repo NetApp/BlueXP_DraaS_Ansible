@@ -1,0 +1,45 @@
+---
+- name: Make HTTP POST request to run a failback job.
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/env/extravars
+
+  tasks:
+    - name: Load the replication plan id variable file
+      ansible.builtin.include_vars:
+        file: ./vars/replication_plan.json
+        name: replication_plan
+
+    - name: Get the replication plan ID
+      ansible.builtin.debug:
+        msg: "{{ replication_plan.json.id }}"
+
+    - name: Trigger failback job for replication plan
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/failbacks"
+        method: post
+        return_content: yes
+        headers:
+          Content-Type: "application/json"  
+          x-agent-id: "{{ agentid }}" 
+          Authorization: "{{ authorization }}"
+          x-account-id: "{{ accountid }}"
+        body: > 
+          {
+            "id": "{{ replication_plan.json.id }}",
+            "reqtype": "failback",
+            "latest_snapshot": true,
+            "snapshot_id": "{{ snapshot_id}}"
+          }
+        body_format: json
+        status_code: [200, 202, 201]
+      register: result
+    
+    - name: Setting failback job result value.
+      ansible.builtin.set_fact:
+        failback_job_result: "{{ result }}"
+
+    - name: Print the failback check job ID
+      ansible.builtin.debug:
+        msg: "{{ failback_job_result.json.id }}" 

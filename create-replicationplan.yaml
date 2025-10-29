@@ -1,0 +1,330 @@
+---
+- name: Make HTTP POST request add a Replication Plan
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/env/extravars
+
+  tasks:
+    - name: Load the RG variable file
+      ansible.builtin.include_vars:
+        file: ./vars/resourcegroupe.json
+        name: resourcegroupe
+
+    - name: Get the RG ID
+      ansible.builtin.debug:
+        msg: "{{ resourcegroupe.json.id }}"
+
+    - name: Load the src_site variable file
+      ansible.builtin.include_vars:
+        file: ./vars/src_site.json
+        name: src_site
+    
+    - name: Load the src_vcenter variable file
+      ansible.builtin.include_vars:
+        file: ./vars/src_vcenter.json
+        name: src_vcenter
+    
+    - name: Load the dest_site variable file
+      ansible.builtin.include_vars:
+        file: ./vars/dest_site.json
+        name: dest_site
+    
+    - name: Load the dest_vcenter variable file
+      ansible.builtin.include_vars:
+        file: ./vars/dest_vcenter.json
+        name: dest_vcenter
+
+    - name: Add Replication Plan
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/replicationplans"
+        method: post
+        return_content: yes
+        headers:
+          Content-Type: "application/json"
+          Authorization: "{{ authorization }}"  
+          x-account-id: "{{ accountid }}"
+          x-agent-id: "{{ agentid }}"
+        body: >
+          {
+                "anf_replication_settings": {
+                    "azure_credential_id": "",
+                    "cluster_peer_info": null,
+                    "cluster_peer_ips": null
+                },
+                "backup_schedule_id": "e6eb9197-14a3-473b-b362-b0bfb3bcca76",
+                "backup_schedules": [
+                    {
+                        "hours_interval": 3,
+                        "id": "e6eb9197-14a3-473b-b362-b0bfb3bcca76",
+                        "schedule_type": "Hourly",
+                        "start_time": "2025-08-15T00:00:00.000Z"
+                    }
+                ],
+                "cleanup_test_failover": false,
+                "compliance_job_id": "094f3d88-7b32-4eca-a1af-be135fcaef13",
+                "config_settings": {
+                    "isdhcp": false,
+                    "issubnetmapping": false,
+                    "use_same_ip_config_settings": false,
+                    "use_same_ip_source": true,
+                    "use_different_ip_source": false,
+                    "use_different_ip_settings": false
+                },
+                "created_on": "2025-08-15T15:24:13Z",
+                "cvo_resource": {
+                    "private_cloud_name": ""
+                },
+                "datacenter_mappings": [
+                    {
+                        "destination": {
+                            "cluster": {
+                                "cluster": "domain-c10",
+                                "drs_enabled": false,
+                                "ha_enabled": false,
+                                "name": "VCF9E_Cluster01",
+                                "type": "",
+                                "uuid": ""
+                            },
+                            "datacenter": {
+                                "datacenter": "datacenter-3",
+                                "name": "VCF9E-DC01",
+                                "uuid": ""
+                            },
+                            "folder": {
+                                "folder": "",
+                                "name": "",
+                                "type": "",
+                                "uuid": ""
+                            },
+                            "host": {
+                                "datacenter": "",
+                                "host": "",
+                                "name": "",
+                                "uuid": ""
+                            }
+                        },
+                        "source": {
+                            "cluster": {
+                                "cluster": "domain-c10",
+                                "drs_enabled": false,
+                                "ha_enabled": false,
+                                "name": "VCF9D-Cluster01",
+                                "type": "",
+                                "uuid": ""
+                            },
+                            "datacenter": {
+                                "datacenter": "datacenter-3",
+                                "name": "VCF9D-DC01",
+                                "uuid": ""
+                            },
+                            "folder": {
+                                "folder": "",
+                                "name": "",
+                                "type": "",
+                                "uuid": ""
+                            },
+                            "host": {
+                                "datacenter": "",
+                                "host": "",
+                                "name": "",
+                                "uuid": ""
+                            }
+                        },
+                        "test_destination": {
+                            "cluster": {
+                                "cluster": "domain-c10",
+                                "drs_enabled": false,
+                                "ha_enabled": false,
+                                "name": "VCF9E_Cluster01",
+                                "type": "",
+                                "uuid": ""
+                            },
+                            "datacenter": {
+                                "datacenter": "datacenter-3",
+                                "name": "VCF9E-DC01",
+                                "uuid": ""
+                            },
+                            "folder": {
+                                "folder": "",
+                                "name": "",
+                                "type": "",
+                                "uuid": ""
+                            },
+                            "host": {
+                                "datacenter": "",
+                                "host": "",
+                                "name": "",
+                                "uuid": ""
+                            }
+                        }
+                    }
+                ],
+                "datastore_mappings": [
+                    {
+                        "destination": {
+                            "anf_resource": {
+                                "azure_region": "",
+                                "private_cloud_name": ""
+                            },
+                            "export_policy": {},
+                            "id": "",
+                            "name": "DRaaS_SrcB_test",
+                            "nfs_lif": {},
+                            "path": "DR_Dstn_New:DRaaS_SrcB_dest_DR_CLONE_test",
+                            "target_mount_failed": false,
+                            "volume_uuid": "7fffe353-79b6-11f0-9777-00a0b896719e",
+                            "working_environment_id": "OnPremWorkingEnvironment-vNUY8KO1",
+                            "working_environment_name": "NTAP-328-N2",
+                            "create_snapmirror": false
+                        },
+                        "source": {
+                            "anf_resource": {
+                                "azure_region": "",
+                                "private_cloud_name": ""
+                            },
+                            "cg_path": "DR_Src_New:/cg/",
+                            "export_policy": {},
+                            "id": "ZHMtPjUxNWJhZmZiLTJhYmItNGVmYS04N2JiLTVmN2Y5YzhhODE4ZS0+RFJhYVNfU3JjQg==",
+                            "name": "DRaaS_SrcB",
+                            "nfs_lif": {},
+                            "target_mount_failed": false,
+                            "volume_uuid": "3ef8c1ae-791b-11f0-8f66-00a0b8962c51",
+                            "working_environment_id": "OnPremWorkingEnvironment-PL1PEUz9"
+                        },
+                        "test_destination": {
+                            "anf_resource": {
+                                "azure_region": "",
+                                "private_cloud_name": ""
+                            },
+                            "cg_path": "_DR_CLONE_test",
+                            "export_policy": {},
+                            "id": "",
+                            "name": "DRaaS_SrcB_TEST",
+                            "create_snapmirror": false,
+                            "nfs_lif": {},
+                            "path": "DR_Dstn_New:DRaaS_SrcB_dest_DR_test",
+                            "target_mount_failed": false,
+                            "working_environment_id": "OnPremWorkingEnvironment-vNUY8KO1"
+                        }
+                    }
+                ],
+                "destination_site": {
+                    "id": "{{ dest_site.json.id }}",
+                    "name": "{{ destsitename }}",
+                    "type": "onprem"
+                },
+                "destination_vcenter": {
+                    "host_name": "{{ destsitename }}",
+                    "id": "{{ dest_vcenter.json.id }}"
+                },
+                "disabled": false,
+                "folder_hierarchy": true,
+                "force_failover": false,
+                "id": "8dfc4fb1-2884-4d06-b14f-2af530a2deb7",
+                "laps_config": {},
+                "modified_on": "2025-08-22T01:32:43Z",
+                "name": "ANSIBLE_DemoRP01",
+                "network_mappings": [
+                    {
+                        "destination_segment": {
+                            "datacenter_id": "datacenter-3",
+                            "datacenter_name": "VCF9E-DC01",
+                            "id": "bnctPmE0MTEzNDhjLWIyMzctNDcyNS1iMDdhLWJiM2I3YTA2MmRiZC0+RHN0bl9WTU5fMzI4",
+                            "name": "Dstn_VMN_328",
+                            "network": "dvportgroup-26",
+                            "type": "DISTRIBUTED_PORTGROUP"
+                        },
+                        "source_vlan": {
+                            "id": "bnctPjUxNWJhZmZiLTJhYmItNGVmYS04N2JiLTVmN2Y5YzhhODE4ZS0+UEdfVk1OXzMyOA==",
+                            "name": "PG_VMN_328"
+                        },
+                        "test_destination_segment": {
+                            "datacenter_id": "datacenter-3",
+                            "datacenter_name": "VCF9E-DC01",
+                            "id": "bnctPmE0MTEzNDhjLWIyMzctNDcyNS1iMDdhLWJiM2I3YTA2MmRiZC0+RHN0bl9WTU5fMzI4",
+                            "name": "Dstn_VMN_328",
+                            "network": "dvportgroup-26",
+                            "type": "DISTRIBUTED_PORTGROUP"
+                        }
+                    }
+                ],
+                "resource_groups": [
+                    {
+                        "data_center": "",
+                        "destination_vm_details": [
+                            {
+                                "app_consistent": false,
+                                "boot_delay": 0,
+                                "boot_order": 1,
+                                "cpu": 2,
+                                "dns": "",
+                                "gateway": "",
+                                "id": "dm0tPjUxNWJhZmZiLTJhYmItNGVmYS04N2JiLTVmN2Y5YzhhODE4ZS0+W0RSYWFTX1NyY0JdIERSYWFTVGVzdF9VMjRfTmV3L0RSYWFTVGVzdF9VMjRfTmV3LnZteA==",
+                                "ip_address": "",
+                                "memory": 2048,
+                                "service_account": {},
+                                "subnet_mask": ""
+                            },
+                            {
+                                "app_consistent": false,
+                                "boot_delay": 0,
+                                "boot_order": 1,
+                                "cpu": 2,
+                                "dns": "10.193.170.254",
+                                "gateway": "",
+                                "id": "dm0tPjUxNWJhZmZiLTJhYmItNGVmYS04N2JiLTVmN2Y5YzhhODE4ZS0+W0RSYWFTX1NyY0JdIERSYWFTVGVzdF9XMksyMl9uZXcvRFJhYVNUZXN0X1cySzIyX25ldy52bXg=",
+                                "ip_address": "",
+                                "memory": 4096,
+                                "service_account": {},
+                                "subnet_mask": ""
+                            }
+                        ],
+                        "id": "{{ resourcegroupe.json.id }}",
+                        "name": "ANSIBLE_ResourceGroup1",
+                        "test_destination_vm_details": []
+                    }
+                ],
+                "same_script_for_all_v_ms": false,
+                "schedule": 0,
+                "scheduleID": "0a4fabe9-0a04-4b0c-b584-c94bd06a8a40",
+                "schedule_retention_count": 30,
+                "service_account": {},
+                "source_site": {
+                    "id": "{{ src_site.json.id }}",
+                    "name": "{{ srcsitename }}",
+                    "type": "onprem"
+                },
+                "source_vcenter": {
+                    "host_name": "{{ srcvcenterhostname }}",
+                    "id": "{{ src_vcenter.json.id }}"
+                },
+                "status": "testfailover_committed",
+                "tear_down_job_start_wait_time_minutes": "",
+                "test_failover_count": 1,
+                "test_failover_schedule": {},
+                "test_folder_hierarchy": true,
+                "type": "disaster-recovery",
+                "vm_alias_prefix": "",
+                "vm_alias_suffix": "",
+                "workflow_job_id": "080910ff-778b-44c6-8081-62f9e716fa16",
+                "workflow_type": "testfailover"
+            }
+        validate_certs: no
+        body_format: json
+        return_content: yes
+        status_code: [200, 202, 201]
+      register: result
+
+    - name: Print result
+      debug:
+        var: result
+
+    - name: Setting replication plan value.
+      ansible.builtin.set_fact:
+        replication_plan: "{{ result }}"
+
+    - name: Save the value to a file
+      ansible.builtin.copy:
+        content: "{{ replication_plan | to_json }}"
+        dest: ./vars/replication_plan.json

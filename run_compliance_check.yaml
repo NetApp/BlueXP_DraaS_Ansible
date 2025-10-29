@@ -1,0 +1,42 @@
+---
+- name: Make HTTP POST request to run a compliance check.
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars/env/extravars
+
+  tasks:
+    - name: Load the replication plan id variable file
+      ansible.builtin.include_vars:
+        file: ./vars/replication_plan.json
+        name: replication_plan
+
+    - name: Get the replication plan ID
+      ansible.builtin.debug:
+        msg: "{{ replication_plan.json.id }}"
+
+    - name: Trigger compliance check job for replication plan
+      uri:
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/compliancecheck"
+        method: post
+        return_content: yes
+        headers:
+          Content-Type: "application/json"  
+          x-agent-id: "{{ agentid }}" 
+          Authorization: "{{ authorization }}"
+          x-account-id: "{{ accountid }}"
+        body: > 
+          {
+            "id": "{{ replication_plan.json.id }}"
+          }
+        body_format: json
+        status_code: [200, 202, 201]
+      register: result
+    
+    - name: Setting compliance job result value.
+      ansible.builtin.set_fact:
+        compliance_job_result: "{{ result }}"
+
+    - name: Print the compliance check job ID
+      ansible.builtin.debug:
+        msg: "{{ compliance_job_result.json.id }}" 

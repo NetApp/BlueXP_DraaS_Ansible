@@ -1,14 +1,14 @@
 ---
-- name: Make HTTP GET request to fetch replication plans
+- name: Make HTTP GET request to fetch VMs in a vcenter
   hosts: localhost
   gather_facts: no
   vars_files:
-    - vars/env/extravars
+    - vars/main.yaml
 
   tasks:
-    - name: Fetch replication plans
+    - name: Fetch Vms
       uri:
-        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/replicationplans?"
+        url: "https://snapcenter.cloudmanager.cloud.netapp.com/api/vmdr/vcenters/{{ vcenterid }}/virtual-machines/{{ vmid }}"
         method: get
         return_content: yes
         headers:
@@ -18,7 +18,7 @@
           x-account-id: "{{ accountid }}"
       register: result
 
-    - name: Print the fetched replication plans
+    - name: Print the fetched VM
       debug:
         var: result.json
 
