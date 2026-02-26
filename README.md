@@ -43,7 +43,7 @@ All required variables are defined in the `vars/env/extravars` file. Ensure this
 
 ## Required Variables
 - token: "" # Available at https://services.cloud.netapp.com/refresh-token
-- clientid: "Mu0V1ywgYteI6w1MbD15fKfVIUrNXGWC" # No need to change this - Same for all api calls.
+- clientid: "" # Add the client ID.
 - agentid: "" # BlueXP Connector Agent ID
 - authorization: "Bearer " #Put you access token after `Bearer`, this will be obtained by running "access_token.yaml" playbook.
 - accountid: "" # BlueXP account ID
